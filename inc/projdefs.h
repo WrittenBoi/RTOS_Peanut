@@ -4,8 +4,8 @@
 /// task function type
 typedef void (*TaskFunction_t)(void*);
 
-#define pdFALSE     ((BaseType_)0)
-#define pdTRUE      ((BaseType_)1)
+#define pdFALSE     ((BaseType_t)0)
+#define pdTRUE      ((BaseType_t)1)
 
 #define pdPASS      (pdTRUE)
 #define pdFAIL      (pdFALSE)
