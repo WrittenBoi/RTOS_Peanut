@@ -16,7 +16,7 @@ void vListInitNode(ListNode_t *const pxNode) {
 }
 
 static inline void vListInsertAfterNode(ListNode_t *const pxNewNode,
-        ListNode_t *const pxNode) {
+                ListNode_t *const pxNode) {
     pxNewNode->pxNext = pxNode->pxNext;
     pxNewNode->pxPrev = pxNode;
     pxNode->pxNext->pxPrev = pxNewNode;
@@ -24,7 +24,7 @@ static inline void vListInsertAfterNode(ListNode_t *const pxNewNode,
 }
 
 static inline void vListInsertBeforeNode(ListNode_t *const pxNewNode,
-        ListNode_t *const pxNode) {
+                ListNode_t *const pxNode) {
     pxNewNode->pxNext = pxNode;
     pxNewNode->pxPrev = pxNode->pxPrev;
     pxNewNode->pxPrev->pxNext = pxNewNode;
@@ -47,7 +47,7 @@ void vListInsert(List_t *const pxList, ListNode_t *const pxNewNode) {
     //Find the position to insert
     if (portMAX_DELAY != xNewNodeValue) {
         for (; pxNodeIterator->pxNext->xNodeValue <= xNewNodeValue;
-                pxNodeIterator = pxNodeIterator->pxNext) {
+                        pxNodeIterator = pxNodeIterator->pxNext) {
             ; //Do nothing!
         }
     } else {
@@ -63,7 +63,7 @@ void vListInsert(List_t *const pxList, ListNode_t *const pxNewNode) {
 
 }
 
-UBaseType_t uxListDelete(ListNode_t *const pxNode) {
+UBaseType_t uxListRemove(ListNode_t *const pxNode) {
     List_t *const pxList = (List_t*) pxNode->pvContainer;
 
     // Unlink the node chain

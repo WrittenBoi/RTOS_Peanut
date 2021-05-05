@@ -23,15 +23,46 @@ typedef struct {
     ListNodeMini_t xListEnd;
 } List_t;
 
-#define vListSetNodeOwner(pNode, pOwner) ((pNode)->pvOwner = (pOwner))
-#define pvListGetNodeOwner(pNode) ((pNode)->pvOwner)
+#define vListSetNodeOwner(pNode, pOwner)    ((pNode)->pvOwner = (pOwner))
+#define pvListGetNodeOwner(pNode)           ((pNode)->pvOwner)
 
-#define vListSetNodeValue(pNode, value) ((pNode)->xNodeValue = (value))
-#define xListGetNodeValue(pNode) ((pNode)->xNodeValue)
+#define vListSetNodeValue(pNode, value)     ((pNode)->xNodeValue = (value))
+#define xListGetNodeValue(pNode)            ((pNode)->xNodeValue)
 
-#define pxListGetNext(pNode) ((pNode)->pxNext)
-#define pxListGetPrev(pNode) ((pNode)->pxPrev)
-#define uxListGetNodeCounts(pList) ((pList)->uxNodeCounts)
+#define pxListGetNext(pNode)            ((pNode)->pxNext)
+#define pxListGetPrev(pNode)            ((pNode)->pxPrev)
+#define uxListGetNodeCounts(pList)      ((pList)->uxNodeCounts)
+
+// 获取List的节点数
+#define listGET_LIST_LENGTH(pxList)  ((pxList)->uxNodeCounts)
+
+// 空List？
+#define listLIST_IS_EMPTY(pxList)   \
+    ((UBaseType_t)((UBaseType_t)0 == listGET_LIST_LENGTH(pxList)))
+
+// 设定节点的值
+#define listSET_LIST_ITEM_VALUE(pxNode, xNewValue)  \
+                ((pxNode)->xNodeValue = (TickType_t)(xNewValue))
+// 取得节点的值
+#define listGET_LIST_ITEM_VALUE(pxNode)     ((pxNode)->xNodeValue)
+
+// 获取List的下一个节点，更新NodeIndex，并将该节点的Owner赋给pxTCB
+#define listGET_OWNER_OF_NEXT_ENTRY(pxTCB, pxList)  do {                \
+    List_t *const pxConstList = (pxList);                               \
+    pxConstList->pxNodeIndex = pxConstList->pxNodeIndex->pxNext;        \
+    if ((pxConstList->pxNodeIndex) ==                                   \
+        ((ListNode_t*) (&(pxConstList->xListEnd)))) {                   \
+        pxConstList->pxNodeIndex = pxConstList->pxNodeIndex->pxNext;    \
+    }                                                                   \
+    (pxTCB) = pvListGetNodeOwner(pxConstList->pxNodeIndex);             \
+}while (0)
+
+// 获取List的头节点
+#define listGET_HEAD_ENTRY(pxList) ((&((pxList)->xListEnd))->pxNext)
+
+// 获取List的头节点的OWNER
+#define listGET_OWNER_OF_HEAD_ENTRY(pxList)     \
+                (listGET_HEAD_ENTRY(pxList)->pvOwner)
 
 void vListInit(List_t *const pxList);
 void vListInitNode(ListNode_t *const pxNode);
@@ -39,6 +70,6 @@ void vListInitNode(ListNode_t *const pxNode);
 void vListInsert(List_t *const pxList, ListNode_t *const pxNewNode);
 void vListInsertEnd(List_t *const pxList, ListNode_t *const pxNewNode);
 
-UBaseType_t uxListDelete(ListNode_t *const pxNode);
+UBaseType_t uxListRemove(ListNode_t *const pxNode);
 
 #endif // __PEANUT_LIST_H
